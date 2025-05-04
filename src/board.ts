@@ -1,4 +1,5 @@
 import { ADJACENT_POSITIONS, inBounds } from "./utils";
+import chalk from "chalk";
 
 export function createViews(rows: number, cols: number)
     : { gameView: number[][], userView: number[][] } {
@@ -76,9 +77,9 @@ export function printView(view: number[][]): void {
     for (const row of view) {
         console.log(row.map(cell => {
             switch (cell) {
-                case -1: return "*".padStart(maxLength, ' ');
+                case -1: return chalk.blue("*".padStart(maxLength, ' '));
                 case -2: return "?".padStart(maxLength, ' ');
-                case -3: return "F".padStart(maxLength, ' ');
+                case -3: return chalk.red("F".padStart(maxLength, ' '));
                 default: return cell.toString().padStart(maxLength, ' ');
             }
         }).join(' '))

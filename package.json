@@ -2,5 +2,8 @@
   "type": "commonjs",
   "devDependencies": {
     "@types/node": "^22.15.3"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1"
   }
 }
