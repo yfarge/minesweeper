@@ -67,18 +67,17 @@ export function flagCell(userView: number[][], row: number, col: number): void {
         userView[row][col] = -3;
     } else if (cell === -3) {
         userView[row][col] = -2;
-    } else {
-        console.log("Cannot flag revealed cell!")
     }
 }
 
 export function printView(view: number[][]): void {
     const maxLength = Math.max(...view.flat().map(num => num.toString().length));
+    console.log(chalk.green("MineSweeper"));
     for (const row of view) {
         console.log(row.map(cell => {
             switch (cell) {
                 case -1: return chalk.blue("*".padStart(maxLength, ' '));
-                case -2: return "?".padStart(maxLength, ' ');
+                case -2: return chalk.grey("?".padStart(maxLength, ' '));
                 case -3: return chalk.red("F".padStart(maxLength, ' '));
                 default: return cell.toString().padStart(maxLength, ' ');
             }
