@@ -13,36 +13,45 @@ export async function createGame(options: GameOptions) {
     const rl = readline.createInterface({ input: stdin, output: stdout });
 
     console.clear();
-    console.log("Welcome to MineSweeper!");
     printView(userView);
 
     while (true) {
         const { action, coordinate: [row, col] } = await promptForAction(rl, numRows, numCols);
+        const cell = userView[row][col];
+        const isRevealed = cell >= 0;
+        const isFlagged = cell === -3;
+        const isBomb = gameView[row][col] === -1;
 
-        let shouldRedraw = true;
+        let shouldRedraw = false;
         let gameOver = false;
 
         if (action === ACTIONS.FLAG) {
-            flagCell(userView, row, col);
-        } else {
-            if (userView[row][col] >= 0) {
-                console.log("You've already revealed this cell! Pick an unrevealed cell to continue your search.");
-                shouldRedraw = false;
-            } else if (userView[row][col] === -3) {
-                console.log("You cannot search a flagged cell. Unflag cell first.");
-                shouldRedraw = false;
-            } else if (gameView[row][col] === -1) {
-                console.log("Game over! You lose.");
-                revealBombs(gameView, userView, bombs);
-                gameOver = true;
+            if (isRevealed) {
+                console.log("Cannot flag a revealed cell.")
             } else {
-                search(gameView, userView, row, col);
+                flagCell(userView, row, col);
+                shouldRedraw = true;
             }
         }
 
-        if (shouldRedraw || gameOver) {
+        if (action === ACTIONS.REVEAL) {
+            if (isRevealed) {
+                console.log("You've already revealed this cell! Pick an unrevealed cell to continue your search.");
+            } else if (isFlagged) {
+                console.log("You cannot search a flagged cell. Unflag cell first.");
+            } else if (isBomb) {
+                console.log("Game over! You lose.");
+                revealBombs(gameView, userView, bombs);
+                gameOver = true;
+                shouldRedraw = true;
+            } else {
+                search(gameView, userView, row, col);
+                shouldRedraw = true;
+            }
+        }
+
+        if (shouldRedraw) {
             console.clear();
-            if (gameOver) console.log("Game over! You lose.");
             printView(userView);
         }
 
@@ -53,7 +62,10 @@ export async function createGame(options: GameOptions) {
             break;
         }
 
-        if (gameOver) break;
+        if (gameOver) {
+            console.log("Game over! You lose.");
+            break;
+        }
     }
 
     rl.close();
