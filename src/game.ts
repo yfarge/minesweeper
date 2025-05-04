@@ -58,7 +58,7 @@ export async function createGame(options: GameOptions) {
         if (hasWon(userView, numBombs)) {
             console.clear();
             printView(userView);
-            console.log("You win! All bombs have been discovered.");
+            console.log("You win! All bombs have been discovered :)");
             break;
         }
 
